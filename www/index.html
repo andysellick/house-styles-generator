@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" id="site" class="nojs">
+<head>
+<!--[if lt IE 9]>
+<script src="static/js/vendor/html5shiv.js"></script>
+<![endif]-->
+
+    <title>House Styles Generator</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="static/css/styles.css"/>
+    <link rel="stylesheet" media="screen and (min-width:0) and (max-width:767px)" href="/static/css/styles-responsive.css"/>
+    <!--[if lt IE 8 ]>
+        <link rel="stylesheet" type="text/css" href="static/css/styles-responsive.css"/>
+    <![endif]-->
+
+    <script>
+        /* we want to remove the nojs class as soon as possible on page load */
+        document.getElementById("site").className = document.getElementById("site").className.replace(/nojs/i,'');
+    </script>
+</head>
+
+<!--[if lt IE 7 ]>				<body class="iex ie6"> <![endif]-->
+<!--[if IE 7 ]>					<body class="iex ie7"> <![endif]-->
+<!--[if IE 8 ]>					<body class="iex ie8"> <![endif]-->
+<!--[if IE 9 ]>					<body class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->	<body> <!--<![endif]-->
+
+    <div class="container">
+        <p>Select the options you require.</p>
+        <form method="POST">
+            <div class="row">
+                <div class="span4">
+                    <h2>Core files</h2>
+                    <div class="js-selectall">
+                        <!-- COREFILES -->
+                    </div>
+                </div>
+                <div class="span4">
+                    <h2>Optional files</h2>
+                    <div class="js-selectall">
+                        <!-- EXTRAFILES -->
+                    </div>
+                </div>
+                <div class="span4">
+                    <h2>Optional components</h2>
+                    <div class="js-selectall">
+                        <!-- OPTIONFILES -->
+                    </div>
+                </div>
+            </div>
+            <button type="submit">Generate</button>
+        </form>
+    </div>
+
+    <!-- Grab Google-hosted jQuery. Fall back to locally saved file if necessary. -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="static/js/vendor/jquery-1.10.min.js">\x3C/script>')</script>
+    <script>
+        $(document).ready(function(){
+            $('.js-selectall').each(function(){
+                $label = $('<label/>').html('Select all');
+                $('<input/>').attr('type','checkbox').addClass('js-all').prependTo($label);
+                $label.prependTo($(this));
+            });
+
+            $('.js-all').on('click',function(){
+                if($(this).is(':checked')){
+                    $(this).closest('.js-selectall').find('input[type="checkbox"]').not($(this)).prop("checked",true);
+                }
+                else {
+                    $(this).closest('.js-selectall').find('input[type="checkbox"]').not($(this)).prop("checked",false);
+                }
+            });
+        });
+    </script>
+    <!--
+    <script src="static/js/main.js"></script>
+    -->
+
+</body>
+</html>
