@@ -24,8 +24,10 @@ def cleanOutput():
                 shutil.rmtree(file_path,ignore_errors=True)
         except (Exception, e):
             print(e)
+            
+responsive = 0 #option to select responsive styles if available
 
-
+#create all the checkbox options
 for x in range(len(files)):
     if files[x]['type'] == 'core':
         corefiles += '<div class="field"><label><input type="checkbox" name="lessfile-' + files[x]['id'] + '" checked="checked"/>' + files[x]['name'] + '</label></div>'
@@ -33,7 +35,8 @@ for x in range(len(files)):
         extrafiles += '<div class="field"><label><input type="checkbox" name="lessfile-' + files[x]['id'] + '"/>' + files[x]['name'] + '</label></div>'
     if files[x]['type'] == 'optional':
         optionfiles += '<div class="field"><label><input type="checkbox" name="lessfile-' + files[x]['id'] + '"/>' + files[x]['name'] + '</label></div>'
-
+    if 'responsive' in files[x]:
+        responsive = 1
 
 # high level structure based on https://snipt.net/raw/f8ef141069c3e7ac7e0134c6b58c25bf/?nice
 class ServerHandler(http.server.SimpleHTTPRequestHandler):
@@ -51,6 +54,8 @@ class ServerHandler(http.server.SimpleHTTPRequestHandler):
             html = html.replace("<!-- COREFILES -->",corefiles)
             html = html.replace("<!-- EXTRAFILES -->",extrafiles)
             html = html.replace("<!-- OPTIONFILES -->",optionfiles)
+            if responsive:
+                html = html.replace("<!-- RESPONSIVE -->",'<label><input type="checkbox" name="responsive-styles"/>Include responsive styles where available</label>')
             self.wfile.write(bytes(html, 'UTF-8'))
         else: #need to include this so paths other than '/' work e.g. stylesheets
             #logging.warning(self.path)
@@ -75,21 +80,40 @@ class ServerHandler(http.server.SimpleHTTPRequestHandler):
                      })
 
         lessfilecontents = ''
+        responsivelessfilecontents = ''
+        includeresponsive = 0
 
-        #handle less file options
+        for key in form.keys():
+            if 'responsive-styles' in str(key):
+                includeresponsive = 1
+
         for key in form.keys():
             #logging.warning(key)
             #logging.warning(form[key].value)
-            for x in range(len(files)):
-                thiskey = str(key).replace('lessfile-','')
-                if files[x]['id'] == thiskey:
-                    logging.warning('found: ' + files[x]['name'])
-                    shutil.copy2(sourcedir + dirless + files[x]['less'], OUTPUT + dirless + files[x]['less'])
-                    lessfilecontents += '@import "' + files[x]['less'] + '";\n' #add this less file to the main less file
 
-        #write the main less file
-        f = open(OUTPUT + dirless + lessfile,'w')
-        f.write(lessfilecontents)
+            #process all the less file checkboxes
+            if 'lessfile-' in str(key):
+                for x in range(len(files)):
+                    thiskey = str(key).replace('lessfile-','')
+                    if files[x]['id'] == thiskey:
+                        #logging.warning('found: ' + files[x]['name'])
+                        shutil.copy2(sourcedir + dirless + files[x]['less'], OUTPUT + dirless + files[x]['less'])
+                        lessfilecontents += '@import "' + files[x]['less'] + '";\n' #add this less file to the main less file
+                        if includeresponsive and 'responsive' in files[x]:
+                            shutil.copy2(sourcedir + dirless + files[x]['responsive'], OUTPUT + dirless + files[x]['responsive'])
+                            responsivelessfilecontents += '@import "' + files[x]['responsive'] + '";\n'
+
+
+
+        if len(lessfilecontents):
+            #write the main less file
+            f = open(OUTPUT + dirless + lessfile,'w')
+            f.write(lessfilecontents)
+
+        if includeresponsive:
+            #write the responsive less file
+            r = open(OUTPUT + dirless + responsivelessfile,'w')
+            r.write(responsivelessfilecontents)
 
 
         self.send_response(200)

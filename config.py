@@ -5,14 +5,18 @@ dirless = 'static/css/less/'
 dirjs = 'static/js/'
 
 lessfile = 'styles.less'
+responsivelessfile = 'styles-responsive.less'
 
 '''
-    {   'name': "",
-        'id': "",
-        'less': ".less",
-        'styleg': ".html",
-        'js': "",
-    },
+Notes
+- name is used for display purposes in the generator
+- id is used for the form variables, must be unique and contain no spaces
+- less is the full name of the less file
+- responsive is the full name of the responsive less file
+- including responsive option as same as regular less file means that file will also be incorporated into responsive styles, which for the house styles is needed for variables and mixins
+- type must be either 'core', 'extra' or 'optional'
+- styleg is currently unused
+- js is currently unused
 '''
 
 files = [
@@ -37,7 +41,8 @@ files = [
     {   'name': "Mixins",
         'id': "mixins",
         'less': "mixins.less",
-        'type':"core"
+        'type':"core",
+        'responsive':"mixins.less"
     },
     {   'name': "Page",
         'id': "page",
@@ -53,7 +58,8 @@ files = [
         'id': "variables",
         'less': "variables.less",
         'styleg': "variables.html",
-        'type':"core"
+        'type':"core",
+        'responsive':"variables.less"
     },
 
 
@@ -80,14 +86,14 @@ files = [
         'id': "forms",
         'less': "forms.less",
         'styleg': "forms.html",
-        'responsive':"y",
+        'responsive':"forms-responsive.less",
         'type':"extra"
     },
     {   'name': "Grid",
         'id': "grid",
         'less': "grid.less",
         'styleg': "grid.html",
-        'responsive':"y",
+        'responsive':"grid-responsive.less",
         'type':"extra"
     },
     {   'name': "Header",
@@ -156,7 +162,7 @@ files = [
         'less': "popups.less",
         'styleg': "popups.html",
         'js': "popups.js",
-        'responsive': "y",
+        'responsive': "popups-responsive.less",
         'type':"optional"
     },
     {   'name': "Tabs",
@@ -164,7 +170,7 @@ files = [
         'less': "tabs.less",
         'styleg': "tabs.html",
         'js': "",
-        'responsive':"y",
+        'responsive':"tabs-responsive.less",
         'type':"optional"
     },
 
