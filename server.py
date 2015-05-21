@@ -24,7 +24,7 @@ def cleanOutput():
                 shutil.rmtree(file_path,ignore_errors=True)
         except (Exception, e):
             print(e)
-            
+
 responsive = 0 #option to select responsive styles if available
 
 #create all the checkbox options
